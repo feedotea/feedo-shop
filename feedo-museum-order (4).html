@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FEEDO MUSEUM — Shop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=IM+Fell+English:ital@0;1&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--ink:#111;--paper:#f5f0e8;--mid:#c8bfa8;--ff-head:'UnifrakturMaguntia',serif;--ff-body:'IM Fell English',serif;--ff-mono:'Space Mono',monospace}
+html,body{background:var(--paper);color:var(--ink);font-family:var(--ff-body);font-size:15px;line-height:1.6;min-height:100vh}
+.container{max-width:720px;margin:0 auto;border-left:1px solid var(--ink);border-right:1px solid var(--ink);min-height:100vh}
+.nav{display:flex;border-bottom:2px solid var(--ink)}
+.nav button{flex:1;padding:11px 0;background:transparent;border:none;border-right:1px solid var(--ink);font-family:var(--ff-mono);font-size:10px;cursor:pointer;letter-spacing:.08em;color:var(--ink);transition:background .15s}
+.nav button:last-child{border-right:none}
+.nav button.active{background:var(--ink);color:var(--paper)}
+.nav button:hover:not(.active){background:rgba(0,0,0,.06)}
+.page{display:none}.page.active{display:block}
+.masthead{text-align:center;padding:22px 20px 12px;border-bottom:2px solid var(--ink)}
+.masthead-date{font-family:var(--ff-mono);font-size:9px;letter-spacing:.14em;color:#666}
+.masthead-title{font-family:var(--ff-head);font-size:52px;line-height:1;margin:6px 0 4px}
+.masthead-rule{display:flex;align-items:center}
+.masthead-rule span{font-family:var(--ff-mono);font-size:8px;letter-spacing:.18em;white-space:nowrap;padding:0 10px}
+.masthead-rule::before,.masthead-rule::after{content:'';flex:1;height:1px;background:var(--ink)}
+.masthead-tagline{font-family:var(--ff-body);font-style:italic;font-size:12px;color:#555;margin-top:8px}
+.divider{display:flex;align-items:center;gap:8px;padding:12px 20px 8px;font-family:var(--ff-mono);font-size:8px;letter-spacing:.22em;text-transform:uppercase}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--ink)}
+.product-grid{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--ink)}
+.product-card{border-right:1px solid var(--ink);border-bottom:1px solid var(--ink);cursor:pointer;transition:background .15s;position:relative;overflow:hidden}
+.product-card:nth-child(2n){border-right:none}
+.product-card.sold-out{cursor:default;opacity:.7}
+.product-card:not(.sold-out):hover{background:rgba(0,0,0,.03)}
+.product-card.selected{background:var(--ink);color:var(--paper)}
+.prod-img{width:100%;aspect-ratio:1;object-fit:cover;display:block;background:#e8e2d4}
+.prod-img-placeholder{width:100%;aspect-ratio:1;background:#e8e2d4;display:none;align-items:center;justify-content:center;font-size:32px}
+.prod-info{padding:12px 14px}
+.prod-name{font-family:var(--ff-mono);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.prod-price{font-family:var(--ff-body);font-style:italic;font-size:14px;margin-top:2px;opacity:.8}
+.prod-stock{font-family:var(--ff-mono);font-size:9px;color:#888;margin-top:2px}
+.product-card.selected .prod-stock{color:#aaa}
+.sold-out-badge{position:absolute;top:10px;right:10px;background:var(--ink);color:var(--paper);font-family:var(--ff-mono);font-size:8px;letter-spacing:.08em;padding:3px 8px}
+.qty-ctrl{display:flex;align-items:center;gap:8px;padding:0 14px 12px}
+.qty-btn{width:24px;height:24px;border:1px solid currentColor;background:transparent;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:inherit;font-family:var(--ff-mono);line-height:1}
+.qty-btn:hover{opacity:.7}
+.qty-num{font-family:var(--ff-mono);font-size:13px;min-width:20px;text-align:center;font-weight:700}
+.summary-block{border-top:2px solid var(--ink);padding:14px 20px;background:rgba(0,0,0,.025)}
+.summary-row{display:flex;justify-content:space-between;font-family:var(--ff-mono);font-size:10px;padding:3px 0;border-bottom:1px dashed var(--mid)}
+.summary-total{display:flex;justify-content:space-between;font-family:var(--ff-mono);font-size:14px;font-weight:700;padding-top:8px}
+.form-section{padding:16px 20px;border-top:2px solid var(--ink)}
+.form-row{margin-bottom:14px}
+.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.form-label{font-family:var(--ff-mono);font-size:8px;letter-spacing:.16em;text-transform:uppercase;display:block;margin-bottom:4px;color:#666}
+.form-input{width:100%;background:transparent;border:none;border-bottom:1px solid var(--ink);padding:5px 0;font-family:var(--ff-body);font-size:14px;outline:none;color:var(--ink)}
+.form-input:focus{border-bottom:2px solid var(--ink)}
+.form-input::placeholder{color:#aaa;font-style:italic}
+.bank-box{border:1px solid var(--ink);padding:12px 14px;margin:14px 0;background:rgba(0,0,0,.03)}
+.bank-box .bank-title{font-family:var(--ff-mono);font-size:9px;letter-spacing:.12em;font-weight:700;margin-bottom:6px}
+.bank-box table{width:100%;font-family:var(--ff-mono);font-size:10px;line-height:2}
+.bank-box td:first-child{color:#666;width:60px}
+.bank-box .note{font-size:9px;color:#888;margin-top:8px;line-height:1.6;font-family:var(--ff-mono)}
+.btn-primary{width:100%;padding:13px;background:var(--ink);color:var(--paper);border:none;font-family:var(--ff-mono);font-size:10px;letter-spacing:.18em;cursor:pointer;transition:opacity .15s;margin-top:6px}
+.btn-primary:hover{opacity:.82}
+.btn-primary:disabled{opacity:.35;cursor:not-allowed}
+.btn-outline{background:transparent;color:var(--ink);border:1px solid var(--ink);padding:10px 20px;font-family:var(--ff-mono);font-size:10px;letter-spacing:.12em;cursor:pointer;transition:all .15s}
+.btn-outline:hover{background:var(--ink);color:var(--paper)}
+.success-screen{display:none;padding:48px 24px;text-align:center;border-top:2px solid var(--ink)}
+.success-screen.show{display:block}
+.success-ornament{font-size:32px;margin-bottom:16px;letter-spacing:8px}
+.success-title{font-family:var(--ff-head);font-size:38px;margin-bottom:12px}
+.success-id{font-family:var(--ff-mono);font-size:11px;letter-spacing:.1em;color:#666;margin-bottom:16px}
+.success-detail{font-family:var(--ff-body);font-style:italic;font-size:13px;line-height:1.9;color:#555;margin-bottom:24px;border-top:1px solid var(--mid);border-bottom:1px solid var(--mid);padding:14px 0}
+.loading-msg{font-family:var(--ff-mono);font-size:10px;letter-spacing:.1em;color:#888;margin:8px 0}
+.admin-head{padding:14px 20px;border-bottom:2px solid var(--ink);display:flex;align-items:baseline;justify-content:space-between}
+.admin-head-title{font-family:var(--ff-head);font-size:30px}
+.admin-head-sub{font-family:var(--ff-mono);font-size:9px;color:#888}
+.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--ink)}
+.stat{padding:12px 8px;border-right:1px solid var(--ink);text-align:center}
+.stat:last-child{border-right:none}
+.stat-num{font-family:var(--ff-mono);font-size:20px;font-weight:700}
+.stat-label{font-family:var(--ff-mono);font-size:7px;letter-spacing:.1em;color:#888;margin-top:2px}
+.filter-row{display:flex;gap:6px;padding:10px 20px;border-bottom:1px solid var(--mid);flex-wrap:wrap;align-items:center}
+.filter-btn{padding:4px 12px;border:1px solid var(--ink);background:transparent;font-family:var(--ff-mono);font-size:8px;letter-spacing:.08em;cursor:pointer;color:var(--ink)}
+.filter-btn.active{background:var(--ink);color:var(--paper)}
+.col-header{display:grid;grid-template-columns:72px 1fr 80px 72px 80px;gap:6px;padding:6px 20px;background:var(--ink);color:var(--paper);font-family:var(--ff-mono);font-size:8px;letter-spacing:.1em}
+.order-row{display:grid;grid-template-columns:72px 1fr 80px 72px 80px;gap:6px;padding:10px 20px;border-bottom:1px solid var(--mid);align-items:center;font-size:12px}
+.order-row:hover{background:rgba(0,0,0,.03)}
+.order-id{font-family:var(--ff-mono);font-size:9px;font-weight:700}
+.order-date{font-family:var(--ff-mono);font-size:8px;color:#aaa;margin-top:1px}
+.order-name{font-weight:700;font-size:13px}
+.order-contact{font-family:var(--ff-mono);font-size:8px;color:#888;margin-top:1px}
+.order-store{font-family:var(--ff-mono);font-size:9px;color:#666;margin-top:2px}
+.order-items-cell{font-family:var(--ff-mono);font-size:9px;color:#666;line-height:1.5}
+.order-total{font-family:var(--ff-mono);font-size:11px;font-weight:700;text-align:right}
+.status-badge{font-family:var(--ff-mono);font-size:8px;letter-spacing:.04em;padding:3px 8px;border:1px solid;cursor:pointer;display:inline-block;text-align:center;white-space:nowrap}
+.s-pending{border-color:#a07800;color:#704800;background:#fffbde}
+.s-paid{border-color:#1e6b1e;color:#0d4a0d;background:#e8f5e8}
+.s-shipped{border-color:#1a3f8a;color:#0a265a;background:#e4ecfb}
+.empty-state{padding:48px;text-align:center;font-family:var(--ff-body);font-style:italic;color:#aaa}
+.admin-footer{padding:14px 20px;border-top:1px solid var(--mid);display:flex;justify-content:space-between;align-items:center}
+.admin-hint{font-family:var(--ff-mono);font-size:8px;color:#aaa;line-height:1.7}
+.inv-section{padding:16px 20px;border-top:2px solid var(--ink)}
+.inv-title{font-family:var(--ff-mono);font-size:9px;letter-spacing:.12em;font-weight:700;margin-bottom:10px}
+.inv-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--mid);font-family:var(--ff-mono);font-size:10px}
+.inv-row:last-child{border-bottom:none}
+.inv-name{flex:1}
+.inv-ctrl{display:flex;align-items:center;gap:6px}
+.inv-btn{width:22px;height:22px;border:1px solid var(--ink);background:transparent;cursor:pointer;font-size:14px;color:var(--ink)}
+.inv-num{min-width:30px;text-align:center;font-weight:700}
+.inv-save{margin-top:12px;padding:8px 16px;background:var(--ink);color:var(--paper);border:none;font-family:var(--ff-mono);font-size:9px;letter-spacing:.1em;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="container">
+
+<nav class="nav">
+  <button class="active" onclick="switchPage('shop',this)">☕ 顧客下單</button>
+  <button onclick="switchPage('admin',this)">📋 管理後台</button>
+</nav>
+
+<div id="shop" class="page active">
+  <div class="masthead">
+    <div class="masthead-date" id="todayDate"></div>
+    <div class="masthead-title">Feedo Museum</div>
+    <div class="masthead-rule"><span>TAINAN · WEST CENTRAL DISTRICT · BOUTIQUE TEA & MERCHANDISE</span></div>
+    <div class="masthead-tagline">Select your items below — we ship via 7-11 directly to you.</div>
+  </div>
+  <div class="divider">Merchandise</div>
+  <div class="product-grid" id="productGrid"></div>
+  <div class="summary-block" id="summaryBlock" style="display:none">
+    <div class="divider" style="padding:0 0 8px">Order Summary</div>
+    <div id="summaryRows"></div>
+    <div class="summary-total"><span>Total</span><span id="totalAmt">NT$ 0</span></div>
+  </div>
+  <div class="form-section">
+    <div class="divider" style="padding:0 0 12px">Shipping Info</div>
+    <div class="form-row-2">
+      <div><label class="form-label">姓名 Name *</label><input class="form-input" id="f_name" placeholder="王小明"></div>
+      <div><label class="form-label">電話 Phone *</label><input class="form-input" id="f_phone" placeholder="09xx-xxx-xxx"></div>
+    </div>
+    <div class="form-row"><label class="form-label">Email</label><input class="form-input" id="f_email" placeholder="your@email.com" type="email"></div>
+    <div class="form-row-2">
+      <div><label class="form-label">7-11 收件門市 *</label><input class="form-input" id="f_store" placeholder="例：台南文南門市"></div>
+      <div><label class="form-label">門市店號 *</label><input class="form-input" id="f_storeid" placeholder="例：131234"></div>
+    </div>
+    <div class="form-row"><label class="form-label">備註（T-Shirt 請填 S/M/L）</label><input class="form-input" id="f_note" placeholder="尺寸、其他需求"></div>
+    <div class="bank-box">
+      <div class="bank-title">— Payment : Bank Transfer —</div>
+      <table>
+        <tr><td>銀行</td><td>元大銀行 806</td></tr>
+        <tr><td>帳號</td><td>20682000093198</td></tr>
+        <tr><td>戶名</td><td>李辰芮</td></tr>
+      </table>
+      <div class="note">下單後請於 24 小時內完成轉帳，逾時訂單自動取消。<br>轉帳後請截圖末 5 碼，以訂單編號傳至 Instagram @feedo.museum 確認付款。</div>
+    </div>
+    <button class="btn-primary" id="submitBtn" onclick="submitOrder()">— PLACE ORDER —</button>
+    <p class="loading-msg" id="loadingMsg" style="display:none">Submitting order...</p>
+  </div>
+  <div class="success-screen" id="successScreen">
+    <div class="success-ornament">✦ ✦ ✦</div>
+    <div class="success-title">Order Received</div>
+    <div class="success-id" id="successId"></div>
+    <div class="success-detail" id="successDetail"></div>
+    <button class="btn-outline" onclick="resetForm()">再次下單 Place Another Order</button>
+  </div>
+</div>
+
+<div id="admin" class="page">
+  <div class="admin-head">
+    <span class="admin-head-title">Admin</span>
+    <span class="admin-head-sub" id="adminDate"></span>
+  </div>
+  <div class="stats-bar">
+    <div class="stat"><div class="stat-num" id="sTotal">—</div><div class="stat-label">Total</div></div>
+    <div class="stat"><div class="stat-num" id="sPending">—</div><div class="stat-label">待付款</div></div>
+    <div class="stat"><div class="stat-num" id="sPaid">—</div><div class="stat-label">已付款</div></div>
+    <div class="stat"><div class="stat-num" id="sShipped">—</div><div class="stat-label">已出貨</div></div>
+  </div>
+  <div class="filter-row">
+    <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+    <button class="filter-btn" onclick="setFilter('pending',this)">待付款</button>
+    <button class="filter-btn" onclick="setFilter('paid',this)">已付款</button>
+    <button class="filter-btn" onclick="setFilter('shipped',this)">已出貨</button>
+    <button class="filter-btn" onclick="loadOrders()" style="margin-left:auto">↻</button>
+    <button class="filter-btn" onclick="exportExcel()" style="background:var(--ink);color:var(--paper)">↓ 匯出已付款</button>
+  </div>
+  <div class="col-header">
+    <div>ORDER</div><div>CUSTOMER</div><div>ITEMS</div><div>TOTAL</div><div>STATUS</div>
+  </div>
+  <div id="adminList"></div>
+  <div class="inv-section">
+    <div class="inv-title">— Inventory Management —</div>
+    <div id="invList"></div>
+    <button class="inv-save" onclick="saveInventory()">Save Inventory</button>
+  </div>
+  <div class="admin-footer">
+    <div class="admin-hint">點狀態標籤切換：待付款 → 已付款 → 已出貨</div>
+    <a href="https://docs.google.com/spreadsheets/d/1-ZUQN9DwdL1h5y7Z545b3XWlx2k0-Dpvs6u1HOT_Hhg" target="_blank" style="font-family:var(--ff-mono);font-size:9px;color:var(--ink)">Open Sheets ↗</a>
+  </div>
+</div>
+
+</div>
+<script>
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxkYiX-i9MvQWeDsFvjunKIgPbHUb8ml9H5vKIDytKvS3Eiex38198yekBgYjTA0Xn7/exec';
+const ADMIN_PASSWORD='feedo2026';
+const SHIPPING=65;
+const BASE_URL='https://feedotea.github.io/feedo-shop/';
+const PRODUCTS=[
+  {id:'cup-sleeve',name:'狗狗杯套',price:480,stock:200,img:'DSCF6643.jpeg',soldOutMsg:'售完可聯繫小編預定'},
+  {id:'cap-brown',name:'Feedo Cap — Brown',price:800,stock:5,img:'IMG_4226.jpeg',soldOutMsg:'售完可聯繫小編預定'},
+  {id:'cap-black',name:'Feedo Cap — Black',price:800,stock:5,img:'DSCF2202.jpeg',soldOutMsg:'售完可聯繫小編預定'},
+  {id:'cap-red',name:'Feedo Cap — Red',price:800,stock:5,img:'DSCF2210.jpeg',soldOutMsg:'售完可聯繫小編預定'},
+  {id:'tee-moby-white-s',name:'T-Shirt Moby 白 S',price:800,stock:3,img:'feedo-04.jpeg',soldOutMsg:'售完可聯繫小編預定'},
+  {id:'tee-moby-white-m',name:'T-Shirt Moby 白 M',price:800,stock:3,img:'feedo-04.jpeg',soldOutMsg:'售完可聯繫小編預定'},
+  {id:'tee-moby-black-m',name:'T-Shirt Moby 黑 M',price:800,stock:3,img:'feedo-05.jpeg',soldOutMsg:'售完可聯繫小編預定'},
+  {id:'tee-moby-black-l',name:'T-Shirt Moby 黑 L',price:800,stock:3,img:'feedo-05.jpeg',soldOutMsg:'售完可聯繫小編預定'},
+  {id:'tee-feedo-white-s',name:'T-Shirt Feedo 白 S',price:800,stock:3,img:'feedo-02.jpeg',soldOutMsg:'售完可聯繫小編預定'},
+  {id:'tee-feedo-white-m',name:'T-Shirt Feedo 白 M',price:800,stock:3,img:'feedo-02.jpeg',soldOutMsg:'售完可聯繫小編預定'},
+  {id:'tee-feedo-white-l',name:'T-Shirt Feedo 白 L',price:800,stock:3,img:'feedo-02.jpeg',soldOutMsg:'售完可聯繫小編預定'},
+  {id:'tee-feedo-brown-m',name:'T-Shirt Feedo 松茸色 M',price:800,stock:3,img:'IMG_4264.jpeg',soldOutMsg:'售完可聯繫小編預定'},
+  {id:'tee-feedo-brown-l',name:'T-Shirt Feedo 松茸色 L',price:800,stock:3,img:'IMG_4264.jpeg',soldOutMsg:'售完可聯繫小編預定'},
+];
+let qty=new Array(PRODUCTS.length).fill(0);
+let inventory=PRODUCTS.map(p=>p.stock);
+let allOrders=[],currentFilter='all',adminAuthed=false;
+
+function loadInventory(){
+  try{const s=localStorage.getItem('feedo_inv');if(s){const a=JSON.parse(s);if(a.length===PRODUCTS.length)inventory=a;}}catch(e){}
+}
+function saveInventoryLocal(){localStorage.setItem('feedo_inv',JSON.stringify(inventory));}
+
+const now=new Date();
+const dateStr=now.toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric'});
+document.getElementById('todayDate').textContent=dateStr.toUpperCase()+' · VOL.I · TAINAN EDITION';
+document.getElementById('adminDate').textContent=dateStr;
+
+function switchPage(p,btn){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));
+  document.getElementById(p).classList.add('active');
+  btn.classList.add('active');
+  if(p==='admin'){
+    if(!adminAuthed){
+      const pw=prompt('Admin password:');
+      if(pw!==ADMIN_PASSWORD){
+        alert('Wrong password.');
+        document.getElementById('shop').classList.add('active');
+        document.querySelector('.nav button').classList.add('active');
+        btn.classList.remove('active');return;
+      }
+      adminAuthed=true;
+    }
+    loadOrders();renderInventoryAdmin();
+  }
+}
+
+function renderProducts(){
+  document.getElementById('productGrid').innerHTML=PRODUCTS.map((p,i)=>{
+    const stock=inventory[i];const soldOut=stock<=0;const sel=qty[i]>0;
+    const imgUrl=BASE_URL+p.img;
+    return `<div class="product-card ${soldOut?'sold-out':''} ${sel?'selected':''}" id="card-${i}" onclick="${soldOut?'':'cardClick('+i+')'}">
+      <img class="prod-img" src="${imgUrl}" alt="${p.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="prod-img-placeholder">📦</div>
+      ${soldOut?'<div class="sold-out-badge">SOLD OUT</div>':''}
+      <div class="prod-info">
+        <div class="prod-name">${p.name}</div>
+        <div class="prod-price">NT$ ${p.price.toLocaleString()}</div>
+        ${soldOut?`<div class="prod-stock" style="color:#c00">${p.soldOutMsg}</div>`:`<div class="prod-stock">庫存：${stock}</div>`}
+      </div>
+      ${!soldOut?`<div class="qty-ctrl" onclick="event.stopPropagation()">
+        <button class="qty-btn" onclick="changeQty(${i},-1)">−</button>
+        <span class="qty-num" id="q${i}">${qty[i]}</span>
+        <button class="qty-btn" onclick="changeQty(${i},1)">+</button>
+      </div>`:`<div style="padding:0 14px 12px;font-family:var(--ff-mono);font-size:9px;color:#999">聯繫 @feedo.museum</div>`}
+    </div>`;
+  }).join('');
+}
+
+function cardClick(i){if(qty[i]===0){qty[i]=1;updateUI();}}
+function changeQty(i,d){qty[i]=Math.max(0,Math.min(inventory[i],qty[i]+d));updateUI();}
+
+function updateUI(){
+  let total=0;
+  PRODUCTS.forEach((p,i)=>{
+    const qEl=document.getElementById('q'+i);if(qEl)qEl.textContent=qty[i];
+    const card=document.getElementById('card-'+i);
+    if(card){if(qty[i]>0){card.classList.add('selected');total+=p.price*qty[i];}else card.classList.remove('selected');}
+  });
+  const hasItems=qty.some(q=>q>0);
+  const sb=document.getElementById('summaryBlock');
+  if(hasItems){
+    sb.style.display='block';
+    document.getElementById('summaryRows').innerHTML=
+      PRODUCTS.filter((_,i)=>qty[i]>0).map(p=>{const i=PRODUCTS.indexOf(p);return`<div class="summary-row"><span>${p.name} × ${qty[i]}</span><span>NT$ ${(p.price*qty[i]).toLocaleString()}</span></div>`;}).join('')+
+      `<div class="summary-row"><span>🚚 7-11 交貨便運費</span><span>NT$ ${SHIPPING}</span></div>`;
+    document.getElementById('totalAmt').textContent='NT$ '+(total+SHIPPING).toLocaleString();
+  }else sb.style.display='none';
+}
+
+function genOrderId(){return'FM-'+Date.now().toString().slice(-6);}
+
+async function submitOrder(){
+  const name=document.getElementById('f_name').value.trim();
+  const phone=document.getElementById('f_phone').value.trim();
+  const email=document.getElementById('f_email').value.trim();
+  const store=document.getElementById('f_store').value.trim();
+  const storeid=document.getElementById('f_storeid').value.trim();
+  const note=document.getElementById('f_note').value.trim();
+  if(!name||!phone){alert('請填寫姓名和電話');return;}
+  if(!store||!storeid){alert('請填寫 7-11 收件門市名稱和店號');return;}
+  if(!qty.some(q=>q>0)){alert('請選擇至少一項商品');return;}
+  const orderId=genOrderId();
+  const subtotal=PRODUCTS.reduce((s,p,i)=>s+p.price*qty[i],0);
+  const total=subtotal+SHIPPING;
+  const itemStr=PRODUCTS.filter((_,i)=>qty[i]>0).map(p=>`${p.name}×${qty[PRODUCTS.indexOf(p)]}`).join(', ');
+  PRODUCTS.forEach((_,i)=>{if(qty[i]>0)inventory[i]=Math.max(0,inventory[i]-qty[i]);});
+  saveInventoryLocal();
+  document.getElementById('submitBtn').disabled=true;
+  document.getElementById('loadingMsg').style.display='block';
+  try{await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'addOrder',orderId,name,phone,email,addr:'',note:`門市：${store}（${storeid}）${note?' / '+note:''}`,items:itemStr,total:'NT$ '+total.toLocaleString(),status:'待付款',date:new Date().toLocaleString('zh-TW')})});}catch(e){}
+  document.getElementById('loadingMsg').style.display='none';
+  document.querySelector('.form-section').style.display='none';
+  document.getElementById('productGrid').style.display='none';
+  document.getElementById('summaryBlock').style.display='none';
+  document.querySelector('.masthead').style.display='none';
+  document.querySelectorAll('.divider').forEach(d=>d.style.display='none');
+  document.getElementById('successId').textContent='訂單編號 '+orderId;
+  document.getElementById('successDetail').innerHTML=`${name} 您好，感謝訂購。<br><br>${itemStr}<br>運費 NT$ ${SHIPPING}<br>合計 NT$ ${total.toLocaleString()}<br><br>收件門市：${store}（${storeid}）<br><br>請於 24 小時內完成銀行轉帳，<br>並截圖末 5 碼傳至 Instagram @feedo.museum。`;
+  document.getElementById('successScreen').classList.add('show');
+}
+
+function resetForm(){
+  qty=new Array(PRODUCTS.length).fill(0);
+  ['f_name','f_phone','f_email','f_store','f_storeid','f_note'].forEach(id=>document.getElementById(id).value='');
+  document.querySelector('.form-section').style.display='block';
+  document.getElementById('productGrid').style.display='grid';
+  document.querySelector('.masthead').style.display='block';
+  document.querySelectorAll('.divider').forEach(d=>d.style.display='flex');
+  document.getElementById('successScreen').classList.remove('show');
+  document.getElementById('submitBtn').disabled=false;
+  renderProducts();updateUI();
+}
+
+async function loadOrders(){
+  document.getElementById('adminList').innerHTML='<div class="empty-state">Loading...</div>';
+  try{const res=await fetch(`${SCRIPT_URL}?action=getOrders`);const data=await res.json();allOrders=data.orders||[];}catch(e){allOrders=[];}
+  renderAdmin();
+}
+
+function setFilter(f,btn){currentFilter=f;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderAdmin();}
+function filteredOrders(){const m={pending:'待付款',paid:'已付款',shipped:'已出貨'};return currentFilter==='all'?allOrders:allOrders.filter(o=>o.status===m[currentFilter]);}
+
+async function cycleStatus(idx){
+  const o=filteredOrders()[idx];
+  const states=['待付款','已付款','已出貨'];
+  o.status=states[(states.indexOf(o.status)+1)%3];
+  try{await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'updateStatus',orderId:o.orderId,status:o.status})});}catch(e){}
+  renderAdmin();
+}
+
+function renderAdmin(){
+  document.getElementById('sTotal').textContent=allOrders.length;
+  document.getElementById('sPending').textContent=allOrders.filter(o=>o.status==='待付款').length;
+  document.getElementById('sPaid').textContent=allOrders.filter(o=>o.status==='已付款').length;
+  document.getElementById('sShipped').textContent=allOrders.filter(o=>o.status==='已出貨').length;
+  const list=document.getElementById('adminList');
+  const rows=filteredOrders();
+  if(!rows.length){list.innerHTML='<div class="empty-state">— No orders —</div>';return;}
+  const sc={'待付款':'s-pending','已付款':'s-paid','已出貨':'s-shipped'};
+  list.innerHTML=rows.map((o,i)=>`<div class="order-row">
+    <div><div class="order-id">${o.orderId}</div><div class="order-date">${(o.date||'').slice(0,10)}</div></div>
+    <div><div class="order-name">${o.name}</div><div class="order-contact">${o.phone}</div><div class="order-store">${o.note?o.note.replace(/ \/ .*/,''):''}</div></div>
+    <div class="order-items-cell">${o.items}</div>
+    <div class="order-total">${o.total}</div>
+    <div><span class="status-badge ${sc[o.status]||'s-pending'}" onclick="cycleStatus(${i})">${o.status}</span></div>
+  </div>`).join('');
+}
+
+function renderInventoryAdmin(){
+  document.getElementById('invList').innerHTML=PRODUCTS.map((p,i)=>`
+    <div class="inv-row">
+      <span class="inv-name">${p.name}</span>
+      <div class="inv-ctrl">
+        <button class="inv-btn" onclick="adjInv(${i},-1)">−</button>
+        <span class="inv-num" id="inv${i}">${inventory[i]}</span>
+        <button class="inv-btn" onclick="adjInv(${i},1)">+</button>
+      </div>
+    </div>`).join('');
+}
+
+function adjInv(i,d){inventory[i]=Math.max(0,inventory[i]+d);const el=document.getElementById('inv'+i);if(el)el.textContent=inventory[i];}
+function saveInventory(){saveInventoryLocal();renderProducts();alert('庫存已儲存！');}
+
+function exportExcel(){
+  const paid=allOrders.filter(o=>o.status==='已付款');
+  if(!paid.length){alert('目前沒有已付款的訂單');return;}
+  const headers=['寄件人姓名','寄件人電話','收件人姓名','收件人電話','收件門市店號','品項說明','訂單編號'];
+  const rows=paid.map(o=>{const m=o.note?o.note.match(/（(\d+)）/):null;return['李辰芮','0905166629',o.name,o.phone,m?m[1]:'',o.items,o.orderId];});
+  const csv=[headers,...rows].map(r=>r.map(c=>`"${(c||'').toString().replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');
+  a.href=url;a.download=`711寄件單_${new Date().toLocaleDateString('zh-TW').replace(/\//g,'-')}.csv`;
+  a.click();URL.revokeObjectURL(url);
+}
+
+loadInventory();
+renderProducts();
+</script>
+</body>
+</html>

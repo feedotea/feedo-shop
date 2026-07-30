@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>FEEDO MUSEUM — 狗狗杯套限定發行</title>
+<style>
+  :root{
+    --ink:#1a1a1a;
+    --paper:#f2efe6;
+    --paper2:#e8e4d8;
+    --red:#8a2018;
+    --line:#1a1a1a;
+    --ff-serif:'Times New Roman','Songti TC','Noto Serif TC',serif;
+    --ff-mono:'Courier New',monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--paper);color:var(--ink);font-family:var(--ff-serif);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:640px;margin:0 auto;padding:0 16px}
+
+  /* ===== 報頭 ===== */
+  .masthead{border-bottom:3px double var(--ink);padding:22px 0 14px;text-align:center}
+  .masthead .kicker{font-family:var(--ff-mono);font-size:9px;letter-spacing:.42em;text-transform:uppercase;color:var(--ink)}
+  .masthead h1{font-size:42px;font-weight:900;letter-spacing:.02em;margin:6px 0 4px;line-height:1}
+  .masthead .sub{font-family:var(--ff-mono);font-size:9px;letter-spacing:.3em;text-transform:uppercase;display:flex;justify-content:space-between;border-top:1px solid var(--ink);margin-top:10px;padding-top:6px}
+
+  /* ===== 頭條 ===== */
+  .lede{padding:24px 0 6px;text-align:center;border-bottom:1px solid var(--ink)}
+  .lede .headline{font-size:27px;font-weight:800;line-height:1.2;letter-spacing:.01em}
+  .lede .standfirst{font-size:14px;margin-top:10px;color:#333;font-style:italic}
+  .lede .dateline{font-family:var(--ff-mono);font-size:10px;letter-spacing:.2em;margin-top:14px;text-transform:uppercase;color:#555}
+
+  /* ===== 商品 ===== */
+  .section-label{font-family:var(--ff-mono);font-size:10px;letter-spacing:.3em;text-transform:uppercase;text-align:center;margin:22px 0 4px;color:#555}
+  .rule{border:none;border-top:1px solid var(--ink);margin:4px 0}
+
+  .goods{padding:14px 0}
+  .lot{border:1px solid var(--ink);margin-bottom:12px;background:var(--paper)}
+  .lot-top{display:flex;align-items:center;gap:14px;padding:14px}
+  .swatch{width:56px;height:56px;border:1px solid var(--ink);flex-shrink:0;position:relative;overflow:hidden}
+  .swatch img{width:100%;height:100%;object-fit:cover;display:block}
+  .lot-meta{flex:1;min-width:0}
+  .lot-name{font-size:17px;font-weight:700;line-height:1.25}
+  .lot-sku{font-family:var(--ff-mono);font-size:9px;letter-spacing:.16em;color:#777;text-transform:uppercase;margin-top:2px}
+  .lot-price{font-family:var(--ff-mono);font-size:15px;font-weight:700;white-space:nowrap}
+  .lot-stock{font-family:var(--ff-mono);font-size:9px;color:#777;text-align:right;margin-top:2px}
+  .lot-stock.low{color:var(--red)}
+
+  .qtybar{display:flex;align-items:center;border-top:1px solid var(--ink)}
+  .qtybar .lbl{font-family:var(--ff-mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;padding-left:14px;color:#555;flex:1}
+  .qtybtn{width:44px;height:40px;border:none;border-left:1px solid var(--ink);background:transparent;font-family:var(--ff-mono);font-size:18px;cursor:pointer;color:var(--ink);transition:background .12s}
+  .qtybtn:active{background:var(--ink);color:var(--paper)}
+  .qtynum{width:46px;text-align:center;font-family:var(--ff-mono);font-size:16px;font-weight:700;border-left:1px solid var(--ink);line-height:40px}
+  .lot.soldout{opacity:.5}
+  .lot.soldout .qtybar{display:none}
+  .soldstamp{font-family:var(--ff-mono);font-size:11px;letter-spacing:.2em;color:var(--red);border:2px solid var(--red);padding:2px 8px;transform:rotate(-4deg);white-space:nowrap}
+
+  /* ===== 小計 ===== */
+  .tally{border:2px solid var(--ink);margin:16px 0;padding:0}
+  .tally-row{display:flex;justify-content:space-between;padding:9px 14px;font-family:var(--ff-mono);font-size:12px;border-bottom:1px dashed #999}
+  .tally-row:last-child{border-bottom:none}
+  .tally-row.grand{font-size:15px;font-weight:700;background:var(--ink);color:var(--paper)}
+  .tally-row .muted{color:#777}
+
+  /* ===== 表單 ===== */
+  .form{padding:8px 0 4px}
+  .field{margin-bottom:14px}
+  .field label{font-family:var(--ff-mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;display:block;margin-bottom:4px;color:#444}
+  .field label .req{color:var(--red)}
+  .field label .hint{color:var(--red);font-size:9px;letter-spacing:.05em;text-transform:none}
+  .field input,.field textarea{width:100%;border:none;border-bottom:1px solid var(--ink);background:transparent;font-family:var(--ff-serif);font-size:16px;padding:6px 2px;color:var(--ink)}
+  .field input:focus,.field textarea:focus{outline:none;border-bottom-width:2px}
+  .field input::placeholder,.field textarea::placeholder{color:#999;font-style:italic}
+  .field-row{display:flex;gap:14px}
+  .field-row .field{flex:1}
+  .storelink{font-family:var(--ff-mono);font-size:9px;color:var(--red);text-decoration:underline;letter-spacing:.05em}
+
+  /* ===== 付款方式 ===== */
+  .pay-choices{display:flex;gap:0;border:1px solid var(--ink)}
+  .pay-opt{flex:1;text-align:center;padding:12px 6px;cursor:pointer;border-left:1px solid var(--ink);font-family:var(--ff-mono);transition:background .12s}
+  .pay-opt:first-child{border-left:none}
+  .pay-opt.active{background:var(--ink);color:var(--paper)}
+  .pay-opt .pt{font-size:13px;font-weight:700;letter-spacing:.05em}
+  .pay-opt .ps{font-size:8px;letter-spacing:.1em;margin-top:3px;opacity:.7}
+
+  /* ===== 服務條款 ===== */
+  .notice{border:1px solid var(--ink);padding:14px;margin:16px 0;background:var(--paper2)}
+  .notice-h{font-family:var(--ff-mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;border-bottom:1px solid var(--ink);padding-bottom:6px;margin-bottom:10px;text-align:center}
+  .notice-row{display:flex;gap:10px;font-size:12px;margin-bottom:8px;line-height:1.5}
+  .notice-row:last-child{margin-bottom:0}
+  .notice-row .nk{font-family:var(--ff-mono);font-size:10px;color:#666;white-space:nowrap;min-width:60px;letter-spacing:.08em}
+
+  /* ===== 送出 ===== */
+  .cta{width:100%;border:none;background:var(--ink);color:var(--paper);font-family:var(--ff-mono);font-size:16px;font-weight:700;letter-spacing:.3em;padding:20px;cursor:pointer;text-transform:uppercase;margin:6px 0 20px;box-shadow:4px 4px 0 rgba(26,26,26,.25);transition:transform .1s,box-shadow .1s}
+  .cta:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 rgba(26,26,26,.3)}
+  .cta:active{transform:translate(2px,2px);box-shadow:1px 1px 0 rgba(26,26,26,.3)}
+  .cta:disabled{opacity:.4;cursor:not-allowed;box-shadow:none;transform:none}
+
+  /* ===== 頁尾 ===== */
+  .foot{border-top:3px double var(--ink);padding:16px 0 30px;text-align:center;font-family:var(--ff-mono);font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:#555}
+  .foot a{color:var(--red)}
+  .foot .track{display:inline-block;margin-top:8px;border:1px solid var(--ink);padding:6px 12px;color:var(--ink);text-decoration:none;letter-spacing:.14em}
+
+  /* ===== 遮罩 ===== */
+  .overlay{display:none;position:fixed;inset:0;background:rgba(20,20,20,.72);z-index:9999;align-items:center;justify-content:center;padding:24px}
+  .overlay.show{display:flex}
+  .overlay-card{background:var(--paper);border:2px solid var(--ink);max-width:340px;width:100%;padding:26px 22px;text-align:center;box-shadow:6px 6px 0 rgba(0,0,0,.4)}
+  .overlay-card .oh{font-family:var(--ff-mono);font-size:14px;font-weight:700;letter-spacing:.1em;margin-bottom:8px}
+  .overlay-card .os{font-family:var(--ff-mono);font-size:10px;color:#555;line-height:1.7}
+  .spinner{width:30px;height:30px;border:3px solid var(--ink);border-top-color:transparent;border-radius:50%;margin:0 auto 14px;animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* ===== 結果頁 ===== */
+  .result{display:none;padding:40px 0}
+  .result.show{display:block}
+  .result-mark{text-align:center;font-family:var(--ff-mono);letter-spacing:.3em;font-size:12px;color:var(--red)}
+  .result h2{text-align:center;font-size:26px;font-weight:800;margin:10px 0}
+  .result .rid{font-family:var(--ff-mono);background:var(--ink);color:var(--paper);font-size:22px;font-weight:700;letter-spacing:.08em;text-align:center;padding:14px;margin:8px 0 12px}
+  .result .rid-label{font-family:var(--ff-mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;text-align:center;color:var(--red);margin-top:8px}
+  .result .copy-btn{display:block;width:100%;border:1px solid var(--ink);background:transparent;font-family:var(--ff-mono);font-size:12px;letter-spacing:.1em;padding:12px;cursor:pointer;color:var(--ink);margin-bottom:14px}
+  .result .copy-btn.done{background:var(--green);color:#fff;border-color:var(--green)}
+  .result .screenshot-tip{border:2px dashed var(--red);padding:14px;text-align:center;font-family:var(--ff-mono);font-size:12px;color:var(--red);font-weight:700;line-height:1.6;margin-bottom:16px}
+  .result .screenshot-tip span{font-size:9px;font-weight:normal;color:#888;letter-spacing:.05em}
+  .result .rnote{font-size:13px;text-align:center;color:#444;line-height:1.7}
+
+  /* ===== 即將開賣 ===== */
+  .coming{display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px}
+  .coming.show{display:flex}
+  .coming .cmark{font-family:var(--ff-mono);font-size:11px;letter-spacing:.4em;text-transform:uppercase;color:var(--red)}
+  .coming .ctitle{font-size:48px;font-weight:900;letter-spacing:.04em;margin:18px 0 12px;line-height:1}
+  .coming .cline{width:60px;border:none;border-top:2px solid var(--ink);margin:12px 0}
+  .coming .csub{font-family:var(--ff-mono);font-size:12px;letter-spacing:.16em;color:#444;line-height:1.8}
+  .coming .cig{display:inline-block;margin-top:24px;border:1px solid var(--ink);padding:10px 20px;font-family:var(--ff-mono);font-size:11px;letter-spacing:.16em;text-decoration:none;color:var(--ink);text-transform:uppercase}
+  .coming .countdown-label{font-family:var(--ff-mono);font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:#888;margin-top:30px}
+  .coming .countdown{font-family:var(--ff-mono);font-size:38px;font-weight:700;letter-spacing:.06em;margin:6px 0;color:var(--ink)}
+  .coming .countdown-time{font-family:var(--ff-mono);font-size:11px;letter-spacing:.2em;color:var(--red)}
+
+  /* 預告橫幅 */
+  .preview-banner{position:sticky;top:0;z-index:20;background:var(--ink);color:var(--paper);text-align:center;padding:12px 10px;margin:0 -16px 4px;border-bottom:2px solid var(--red)}
+  .preview-banner .pb-label{font-family:var(--ff-mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:#d9b96a}
+  .preview-banner .pb-count{font-family:var(--ff-mono);font-size:26px;font-weight:700;letter-spacing:.08em;margin:2px 0}
+  .preview-banner .pb-time{font-family:var(--ff-mono);font-size:9px;letter-spacing:.16em;color:#aaa}
+  .coming .cfoot{margin-top:40px;font-family:var(--ff-mono);font-size:9px;letter-spacing:.24em;color:#888;text-transform:uppercase}
+
+  @media (max-width:420px){
+    .masthead h1{font-size:34px}
+    .lede .headline{font-size:22px}
+    .field-row{flex-direction:column;gap:14px}
+    .coming .ctitle{font-size:38px}
+  }
+</style>
+</head>
+<body>
+
+<!-- 即將開賣 -->
+<div class="coming" id="comingView">
+  <div class="cmark">The Feedo Times · Tainan</div>
+  <div class="ctitle" id="comingTitle">即將開賣</div>
+  <hr class="cline">
+  <div class="csub" id="comingSub">敬請鎖定 Instagram @feedomuseum</div>
+  <div class="countdown-label">距離開賣</div>
+  <div class="countdown" id="countdownOld">—</div>
+  <div class="countdown-time">2026 · 07 · 30　12:00</div>
+  <a class="cig" href="https://instagram.com/feedomuseum" target="_blank">@feedomuseum ↗</a>
+  <div class="cfoot">Feedo Times · Tainan · 2026</div>
+</div>
+
+<!-- 全場完售頁 -->
+<div class="coming" id="soldoutView">
+  <div class="cmark">The Feedo Times · Tainan</div>
+  <div class="ctitle">完售 SOLD OUT</div>
+  <hr class="cline">
+  <div class="csub">本場限量已全數售出，感謝您的熱情支持。</div>
+  <div class="countdown-time" style="margin-top:14px">下場開賣・敬請鎖定 Instagram</div>
+  <a class="cig" href="https://instagram.com/feedomuseum" target="_blank">@feedomuseum ↗</a>
+  <a class="cig" href="#" onclick="openTrack();return false;" style="margin-top:10px">查詢我的訂單 Track Order ↗</a>
+  <div class="cfoot">Feedo Times · Tainan · 2026</div>
+</div>
+
+<div class="wrap" id="shopView">
+
+  <!-- 預告橫幅(開賣前顯示) -->
+  <div class="preview-banner" id="previewBanner" style="display:none">
+    <div class="pb-label">商品搶先看 · 尚未開賣</div>
+    <div class="pb-count" id="countdown">—</div>
+    <div class="pb-time">開賣時間　2026·07·30　12:00</div>
+  </div>
+
+  <!-- 報頭 -->
+  <header class="masthead">
+    <div class="kicker">The Feedo Times · Tainan</div>
+    <h1>狗狗杯套限定發行</h1>
+    <div class="sub">
+      <span>No. 001</span>
+      <span>特別號</span>
+      <span id="todayStr">—</span>
+    </div>
+  </header>
+
+  <!-- 頭條 -->
+  <section class="lede">
+    <div class="headline"></div>
+    <div class="standfirst">Moby 狗狗杯套限定版與經典款同步登場，售完為止。</div>
+    <div class="dateline">線上限定 · 7-11 交貨便寄送 · 每人限購五件</div>
+  </section>
+
+  <!-- 商品 -->
+  <div class="section-label">— 選購 Select —</div>
+  <hr class="rule">
+  <div class="goods" id="goodsList">
+    <!-- JS 動態產生 -->
+    <div style="text-align:center;font-family:var(--ff-mono);font-size:11px;color:#888;padding:30px 0">載入商品中…</div>
+  </div>
+
+  <!-- 小計 -->
+  <div class="tally" id="tally" style="display:none">
+    <div class="tally-row"><span class="muted">商品小計 Subtotal</span><span id="tSub">NT$ 0</span></div>
+    <div class="tally-row"><span class="muted">運費 Shipping</span><span id="tShip">NT$ 65</span></div>
+    <div class="tally-row grand"><span>應付合計 Total</span><span id="tGrand">NT$ 0</span></div>
+  </div>
+
+  <!-- 表單 -->
+  <div class="section-label">— 收件資料 Delivery —</div>
+  <hr class="rule">
+  <div class="form">
+    <div class="field">
+      <label>姓名 Name <span class="req">*</span> <span class="hint">請填證件姓名（取貨需核對）</span></label>
+      <input type="text" id="fName" placeholder="王小明">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>電話 Phone <span class="req">*</span></label>
+        <input type="tel" id="fPhone" placeholder="0912345678" inputmode="numeric">
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="fEmail" placeholder="you@email.com">
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>7-11 收件門市 <span class="req">*</span></label>
+        <input type="text" id="fStore" placeholder="文南門市">
+      </div>
+      <div class="field">
+        <label>門市店號 <span class="req">*</span>
+          <a class="storelink" href="https://emap.pcsc.com.tw/" target="_blank">不知道店號？查詢 ↗</a>
+        </label>
+        <input type="text" id="fStoreId" placeholder="131234" inputmode="numeric">
+      </div>
+    </div>
+    <div class="field">
+      <label>備註 Notes</label>
+      <input type="text" id="fNote" placeholder="其他需求（選填）">
+    </div>
+
+    <!-- 付款方式:僅信用卡 -->
+    <div class="field">
+      <label>付款方式 Payment</label>
+      <div style="border:1px solid var(--ink);padding:12px 14px;font-family:var(--ff-mono);font-size:13px;letter-spacing:.05em;background:var(--paper2)">
+        信用卡線上付款 · 即時完成
+      </div>
+    </div>
+  </div>
+
+  <!-- 服務條款 -->
+  <div class="notice">
+    <div class="notice-h">Shipping &amp; Service</div>
+    <div class="notice-row"><span class="nk">付款</span><span>信用卡線上即時付款，付款完成後系統自動確認。</span></div>
+    <div class="notice-row"><span class="nk">出貨</span><span>付款確認後 7 個工作日內，由 7-11 交貨便寄送，到店約 2–3 天。</span></div>
+    <div class="notice-row"><span class="nk">退換</span><span>售出商品恕不退換；如有瑕疵，請於取貨 7 日內私訊聯繫。</span></div>
+    <div class="notice-row"><span class="nk">客服</span><span>Instagram @feedomuseum，週一至週五 12:00–18:00。</span></div>
+  </div>
+
+  <button class="cta" id="submitBtn" onclick="submitOrder()">— 前往付款 Checkout —</button>
+
+  <!-- 頁尾 -->
+  <footer class="foot">
+    Feedo Times · Tainan · 2026<br>
+    <a href="https://instagram.com/feedomuseum" target="_blank">@feedomuseum</a>
+    <br>
+    <a class="track" href="#" onclick="openTrack();return false;">查詢我的訂單 Track Order ↗</a>
+  </footer>
+
+</div>
+
+<!-- 結果頁 -->
+<div class="wrap">
+  <section class="result" id="resultView">
+    <div class="result-mark" id="resMark">✦ ✦ ✦</div>
+    <h2 id="resTitle">訂單成立</h2>
+    <div class="rid-label">您的訂單編號 · 請務必保存</div>
+    <div class="rid" id="resId">FM—000000</div>
+    <button class="copy-btn" id="copyBtn" onclick="copyOrderId()">📋 複製訂單編號</button>
+    <div class="screenshot-tip">📸 請截圖保存此畫面<br><span>訂單編號是日後查詢、聯繫客服的唯一依據</span></div>
+    <div class="rnote" id="resNote"></div>
+    <button class="cta" style="margin-top:24px" onclick="location.href='/'">返回商店 Back to Shop</button>
+  </section>
+</div>
+
+<!-- 遮罩 -->
+<div class="overlay" id="overlay">
+  <div class="overlay-card">
+    <div class="spinner"></div>
+    <div class="oh" id="ovH">處理中…</div>
+    <div class="os" id="ovS">請勿關閉或重新整理頁面</div>
+  </div>
+</div>
+
+<!-- 跳綠界前:訂單編號確認 -->
+<div class="overlay" id="preCheckoutOverlay">
+  <div class="overlay-card" style="max-width:360px">
+    <div style="font-family:var(--ff-mono);font-size:10px;letter-spacing:.2em;color:var(--red);text-transform:uppercase">訂單已建立 · 請記下編號</div>
+    <div style="font-family:var(--ff-mono);background:var(--ink);color:var(--paper);font-size:22px;font-weight:700;letter-spacing:.08em;padding:14px;margin:10px 0" id="preOrderId">FM—000000</div>
+    <button id="preCopyBtn" onclick="copyPreOrderId()" style="width:100%;border:1px solid var(--ink);background:transparent;font-family:var(--ff-mono);font-size:12px;padding:10px;cursor:pointer;margin-bottom:10px">📋 複製編號</button>
+    <div style="font-family:var(--ff-mono);font-size:10px;color:#666;line-height:1.6;margin-bottom:14px">📸 建議截圖保存<br>此編號為查詢訂單、聯繫客服的依據</div>
+    <button onclick="proceedToEcpay()" style="width:100%;border:none;background:var(--ink);color:var(--paper);font-family:var(--ff-mono);font-size:14px;font-weight:700;letter-spacing:.15em;padding:16px;cursor:pointer;text-transform:uppercase">前往付款 →</button>
+  </div>
+</div>
+
+<script>
+// ====== 設定 ======
+// 開賣時間:2026/07/30 12:00:00(台灣時間)。時間一到自動開賣,不用手動改。
+const OPEN_TIME = new Date('2026-07-30T12:00:00+08:00');
+// 若想強制立刻開賣(不管時間),把下面改成 true;想強制關閉改成 false;想用定時就維持 null
+const FORCE_OPEN = true;
+
+const OPEN_TEXT = '即將開賣';        // Coming Soon 主標
+const OPEN_SUB  = '敬請鎖定 Instagram @feedomuseum';  // 副標
+const API = 'https://feedo-backend.vercel.app';   // 你的 Vercel 後端
+const SHIP = 65;
+const MAXQTY = 5;
+
+// 判斷現在是否開賣
+function isShopOpen(){
+  if(FORCE_OPEN === true) return true;
+  if(FORCE_OPEN === false) return false;
+  return new Date() >= OPEN_TIME;
+}
+
+let INV = {};       // sku -> {name, price, stock}
+let cart = {};      // sku -> qty
+let payMethod = 'Credit';
+
+// ====== 日期 ======
+(function(){
+  const d = new Date();
+  const mm = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'][d.getMonth()];
+  document.getElementById('todayStr').textContent = `${mm} ${String(d.getDate()).padStart(2,'0')}`;
+})();
+
+// ====== 載入商品 ======
+async function loadInventory(){
+  try{
+    const r = await fetch(`${API}/api/inventory/get`);
+    const data = await r.json();
+    if(!data.success) throw new Error('load failed');
+    INV = {};
+    data.inventory.forEach(p => { INV[p.sku] = {name:p.name, price:p.price, stock:p.stock}; });
+    renderGoods();
+  }catch(e){
+    document.getElementById('goodsList').innerHTML =
+      '<div style="text-align:center;font-family:var(--ff-mono);font-size:11px;color:var(--red);padding:30px 0">商品載入失敗，請重新整理頁面</div>';
+  }
+}
+
+// ====== 顯示商品 ======
+// 固定順序:粉藍黃紫經典
+const ORDER = ['cup-pink','cup-blue','cup-yellow','cup-purple','cup-classic'];
+const SHORT = {'cup-pink':'PINK','cup-blue':'BLUE','cup-yellow':'YELLOW','cup-purple':'PURPLE','cup-classic':'CLASSIC'};
+const IMG = {
+  'cup-pink':'pink.jpg','cup-blue':'blue.jpg','cup-yellow':'yellow.jpg',
+  'cup-purple':'purple.jpg','cup-classic':'classic.jpg'
+};
+
+function renderGoods(){
+  const box = document.getElementById('goodsList');
+  box.innerHTML = '';
+  ORDER.forEach(sku=>{
+    const p = INV[sku];
+    if(!p) return;
+    const qty = cart[sku] || 0;
+    const sold = p.stock <= 0;
+    const lowStock = p.stock > 0 && p.stock <= 5;
+
+    const lot = document.createElement('div');
+    lot.className = 'lot' + (sold ? ' soldout' : '');
+    lot.innerHTML = `
+      <div class="lot-top">
+        <div class="swatch"><img src="${IMG[sku]}" alt="${p.name}" onerror="this.style.display='none';this.parentElement.style.background='#ccc'"></div>
+        <div class="lot-meta">
+          <div class="lot-name">${p.name}</div>
+          <div class="lot-sku">${SHORT[sku]} · No.001</div>
+        </div>
+        <div>
+          <div class="lot-price">NT$ ${p.price}</div>
+        </div>
+        ${sold?'<span class="soldstamp">SOLD OUT</span>':''}
+      </div>
+      ${sold?'':`
+      <div class="qtybar">
+        <span class="lbl">數量 Qty · 上限 5</span>
+        <button class="qtybtn" onclick="chQty('${sku}',-1)">−</button>
+        <span class="qtynum" id="q-${sku}">${qty}</span>
+        <button class="qtybtn" onclick="chQty('${sku}',1)">＋</button>
+      </div>`}
+    `;
+    box.appendChild(lot);
+  });
+
+  // 全場完售檢查:5 色全部 stock<=0
+  const allSold = ORDER.every(sku => !INV[sku] || INV[sku].stock <= 0);
+  if(allSold && Object.keys(INV).length > 0){
+    showSoldOutAll();
+    return;
+  }
+
+  updateTally();
+}
+
+// 全場完售頁
+function showSoldOutAll(){
+  document.getElementById('shopView').style.display = 'none';
+  const el = document.getElementById('soldoutView');
+  if(el) el.classList.add('show');
+}
+
+// ====== 數量調整 ======
+function chQty(sku, delta){
+  if(PREVIEW_MODE){ alert('尚未開賣，7/30 12:00 開放購買！'); return; }
+  const p = INV[sku];
+  if(!p || p.stock<=0) return;
+  const cur = cart[sku] || 0;
+  let next = cur + delta;
+  if(next < 0) next = 0;
+  // 單一商品不超過該庫存
+  if(next > p.stock) next = p.stock;
+  // 全部合計不超過 MAXQTY
+  const otherTotal = Object.keys(cart).reduce((s,k)=> s + (k===sku?0:(cart[k]||0)), 0);
+  if(otherTotal + next > MAXQTY){
+    next = MAXQTY - otherTotal;
+    if(next < 0) next = 0;
+    if(delta > 0) alert(`每人限購 ${MAXQTY} 件，已達上限。`);
+  }
+  if(next === 0) delete cart[sku]; else cart[sku] = next;
+  const el = document.getElementById('q-'+sku);
+  if(el) el.textContent = next;
+  updateTally();
+}
+
+// ====== 小計 ======
+function updateTally(){
+  let sub = 0, count = 0;
+  Object.keys(cart).forEach(sku=>{
+    sub += (INV[sku]?.price||0) * cart[sku];
+    count += cart[sku];
+  });
+  const tally = document.getElementById('tally');
+  if(count > 0){
+    tally.style.display = 'block';
+    document.getElementById('tSub').textContent = 'NT$ ' + sub.toLocaleString();
+    document.getElementById('tGrand').textContent = 'NT$ ' + (sub + SHIP).toLocaleString();
+  }else{
+    tally.style.display = 'none';
+  }
+}
+
+// ====== 付款方式 ======
+function selectPay(method, el){
+  payMethod = method;
+  document.querySelectorAll('.pay-opt').forEach(o=>o.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ====== 送出訂單 ======
+async function submitOrder(){
+  if(PREVIEW_MODE){ alert('尚未開賣，7/30 12:00 開放購買！'); return; }
+  const name = document.getElementById('fName').value.trim();
+  const phone = document.getElementById('fPhone').value.trim().replace(/\s/g,'');
+  const email = document.getElementById('fEmail').value.trim();
+  const store = document.getElementById('fStore').value.trim();
+  const storeId = document.getElementById('fStoreId').value.trim();
+  const note = document.getElementById('fNote').value.trim();
+
+  const items = Object.keys(cart).map(sku=>({sku, qty:cart[sku]}));
+
+  // 驗證
+  if(!items.length){ alert('請至少選擇一件商品'); return; }
+  if(!name){ alert('請填寫姓名'); return; }
+  if(!/^09\d{8}$/.test(phone)){ alert('手機號碼格式不正確（例：0912345678）'); return; }
+  if(!store){ alert('請填寫 7-11 收件門市'); return; }
+  if(!/^\d{6}$/.test(storeId)){ alert('門市店號為 6 碼數字'); return; }
+  if(email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ alert('Email 格式不正確'); return; }
+
+  // 鎖畫面
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  showOverlay('建立訂單中…', '正在確認庫存並前往付款<br>請勿關閉或重新整理頁面');
+
+  try{
+    const r = await fetch(`${API}/api/order/create`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ name, phone, email, storeName:store, storeId, note, items, paymentMethod:payMethod })
+    });
+    const data = await r.json();
+
+    if(!data.success){
+      hideOverlay();
+      btn.disabled = false;
+      if(data.error === 'OUT_OF_STOCK'){
+        const msg = data.shortages.map(s=>`${s.name}（剩 ${s.available} 件，您要 ${s.requested}）`).join('\n');
+        alert(`抱歉，以下商品已被搶購一空：\n\n${msg}\n\n頁面將更新最新庫存。`);
+        loadInventory();
+      }else if(data.error === 'EXCEED_LIMIT'){
+        alert(`每人限購 ${data.limit} 件。`);
+      }else{
+        alert('系統忙碌中，請稍後再試。');
+      }
+      return;
+    }
+
+    // 成功 → 先顯示訂單編號,客人確認後才跳綠界
+    hideOverlay();
+    showPreCheckout(data.orderId, data.ecpayUrl, data.ecpayParams);
+
+  }catch(e){
+    hideOverlay();
+    btn.disabled = false;
+    alert('連線錯誤，請檢查網路後再試一次。');
+  }
+}
+
+// ====== 跳綠界前:先顯示訂單編號 ======
+let _pendingEcpay = null;
+function showPreCheckout(orderId, url, params){
+  _pendingEcpay = { url, params };
+  document.getElementById('preOrderId').textContent = orderId;
+  document.getElementById('preCheckoutOverlay').classList.add('show');
+}
+function copyPreOrderId(){
+  const id = document.getElementById('preOrderId').textContent;
+  const btn = document.getElementById('preCopyBtn');
+  const done = ()=>{ btn.textContent='✓ 已複製'; setTimeout(()=>btn.textContent='📋 複製編號',2000); };
+  if(navigator.clipboard){ navigator.clipboard.writeText(id).then(done).catch(()=>{}); }
+  else{ const ta=document.createElement('textarea');ta.value=id;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done();}catch(e){}document.body.removeChild(ta); }
+}
+function proceedToEcpay(){
+  if(_pendingEcpay){ redirectToEcpay(_pendingEcpay.url, _pendingEcpay.params); }
+}
+
+// ====== 跳轉綠界(建立隱藏表單自動提交) ======
+function redirectToEcpay(url, params){
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = url;
+  form.style.display = 'none';
+  Object.keys(params).forEach(k=>{
+    const inp = document.createElement('input');
+    inp.type = 'hidden';
+    inp.name = k;
+    inp.value = params[k];
+    form.appendChild(inp);
+  });
+  document.body.appendChild(form);
+  form.submit();
+}
+
+// ====== 遮罩 ======
+function showOverlay(h, s){
+  document.getElementById('ovH').textContent = h;
+  document.getElementById('ovS').innerHTML = s;
+  document.getElementById('overlay').classList.add('show');
+}
+function hideOverlay(){
+  document.getElementById('overlay').classList.remove('show');
+}
+
+// ====== 付款完成回來:顯示結果 ======
+function checkResult(){
+  const params = new URLSearchParams(location.search);
+  const orderId = params.get('result');
+  if(!orderId) return;
+
+  document.getElementById('shopView').style.display = 'none';
+  const rv = document.getElementById('resultView');
+  rv.classList.add('show');
+
+  // 查詢訂單狀態
+  fetch(`${API}/api/order/status?orderId=${encodeURIComponent(orderId)}`)
+    .then(r=>r.json())
+    .then(data=>{
+      document.getElementById('resId').textContent = orderId;
+      if(data.success){
+        const o = data.order;
+        if(o.order_status === '已付款'){
+          document.getElementById('resTitle').textContent = '付款完成';
+          document.getElementById('resNote').innerHTML =
+            `感謝訂購，我們已收到款項。<br>將於 7 個工作日內透過 7-11 交貨便寄出。<br><br>請截圖保存訂單編號。`;
+        }else{
+          // 付款尚未完成
+          document.getElementById('resTitle').textContent = '付款未完成';
+          document.getElementById('resNote').innerHTML =
+            `訂單已建立，但尚未收到付款。<br>若您已完成刷卡，款項確認可能需要幾分鐘。<br><br>如持續未顯示已付款，<br>請私訊 IG @feedomuseum 並提供訂單編號。`;
+        }
+      }else{
+        document.getElementById('resNote').innerHTML =
+          `訂單已送出。<br>如有疑問請私訊 IG @feedomuseum 並提供訂單編號。`;
+      }
+    })
+    .catch(()=>{
+      document.getElementById('resId').textContent = orderId;
+      document.getElementById('resNote').innerHTML = `訂單已送出。<br>如有疑問請私訊 IG @feedomuseum。`;
+    });
+}
+
+// ====== 複製訂單編號 ======
+function copyOrderId(){
+  const id = document.getElementById('resId').textContent;
+  const btn = document.getElementById('copyBtn');
+  const done = ()=>{ btn.textContent='✓ 已複製'; btn.classList.add('done'); setTimeout(()=>{btn.textContent='📋 複製訂單編號';btn.classList.remove('done');},2000); };
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(id).then(done).catch(()=>fallbackCopy(id,done));
+  }else{ fallbackCopy(id,done); }
+}
+function fallbackCopy(text, cb){
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); cb(); }catch(e){}
+  document.body.removeChild(ta);
+}
+
+// ====== 查詢訂單 ======
+function openTrack(){
+  const id = prompt('請輸入您的訂單編號（例：FM12345678）');
+  if(!id) return;
+  fetch(`${API}/api/order/status?orderId=${encodeURIComponent(id.trim())}`)
+    .then(r=>r.json())
+    .then(data=>{
+      if(data.success){
+        const o = data.order;
+        const items = (o.items||[]).map(i=>`${i.name}×${i.qty}`).join('、');
+        alert(`訂單 ${o.order_id}\n狀態：${o.order_status}\n商品：${items}\n合計：NT$ ${o.total}`);
+      }else{
+        alert('查無此訂單編號，請確認後再試。');
+      }
+    })
+    .catch(()=>alert('查詢失敗，請稍後再試。'));
+}
+
+// ====== 啟動 ======
+let PREVIEW_MODE = false;   // 預告模式(開賣前):顯示商品但不能買
+
+function initShop(){
+  // 付款完成回來的結果頁,優先處理
+  if(new URLSearchParams(location.search).get('result')){
+    document.getElementById('comingView').classList.remove('show');
+    document.getElementById('shopView').style.display = 'block';
+    checkResult();
+    return;
+  }
+
+  if(!isShopOpen()){
+    // 未開賣:預告模式 — 顯示商品 + 頂部倒數橫幅,但鎖購買
+    PREVIEW_MODE = true;
+    document.getElementById('comingView').classList.remove('show');
+    document.getElementById('shopView').style.display = 'block';
+    document.getElementById('previewBanner').style.display = 'block';
+    startCountdown();
+    loadInventory();
+    // 鎖住結帳按鈕
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = '— 尚未開賣 Not Yet —';
+  }else{
+    // 已開賣
+    document.getElementById('comingView').classList.remove('show');
+    document.getElementById('shopView').style.display = 'block';
+    document.getElementById('previewBanner').style.display = 'none';
+    loadInventory();
+  }
+}
+
+// 倒數計時:每秒更新,時間到自動切換成商店
+function startCountdown(){
+  const el = document.getElementById('countdown');
+  const tick = ()=>{
+    const now = new Date();
+    const diff = OPEN_TIME - now;
+    if(diff <= 0){
+      // 時間到!自動開賣(重新載入,乾淨切換)
+      location.reload();
+      return;
+    }
+    const d = Math.floor(diff/86400000);
+    const h = Math.floor(diff%86400000/3600000);
+    const m = Math.floor(diff%3600000/60000);
+    const s = Math.floor(diff%60000/1000);
+    let txt = '';
+    if(d>0) txt += d+' 天 ';
+    txt += String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+    if(el) el.textContent = txt;
+  };
+  tick();
+  setInterval(tick, 1000);
+}
+
+initShop();
+</script>
+</body>
+</html>
